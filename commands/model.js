@@ -20,12 +20,13 @@ module.exports = {
 };
 
 async function loadTemplateData() {
-	const models = globals.databaseHandler.models;
+	const db = globals.databaseHandler;
+	const models = db.models;
 	const User = models.get('users');
 	const Pool = models.get('pools');
-	await User.create({ discordId: 'MatterMr#2121' }, { include: Pool });
-	await User.create({ discordId: 'tester#2121' }, { include: Pool });
+	const user = await db.createInstance(User, { discordId: 'MatterMr#2121' });
 
-	const user = await User.findOne({ where: { discordId: 'MatterMr#2121' } });
-	await user.createPool({ name: 'testpool' });
+	const tester = await User.create({ discordId: 'tester#2121' }, { include: Pool });
+	await db.createInstance(tester, { name: 'pool' }, undefined, 'Pool');
+	await db.createInstance(user, { name: 'testpool' }, undefined, 'Pool');
 }

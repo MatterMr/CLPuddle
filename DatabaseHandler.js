@@ -76,6 +76,19 @@ class DatabaseHandler {
 			console.log('loaded relations');
 		}
 	}
+	async createInstance(source, obj, exargs, targetType) {
+		try {
+			return await this.sequelize.transaction(async (t) => {
+				return source[`create${targetType === undefined ? '' : targetType}`](
+					obj, exargs, { transaction: t });
+			});
+		}
+		catch (err) {
+			console.log(`ERROR: ${err.errors[0].type} : ${err.errors[0].value}
+             ${err.errors[0].message}`);
+		}
+	}
+
 }
 
 module.exports = { DatabaseHandler };
