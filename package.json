@@ -1,21 +1,21 @@
 {
-  "name": "cmddb",
-  "version": "1.0.0",
-  "description": "Create a command line script to emulate discord bot communicating with SQL server.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "MatterMr <greymatter432@icloud.com>",
-  "license": "ISC",
-  "dependencies": {
-    "mysql": "^2.18.1",
-    "pg": "^8.7.3",
-    "pg-hstore": "^2.3.4",
-    "readline": "^1.3.0",
-    "sequelize": "^6.21.3"
-  },
-  "devDependencies": {
-    "eslint": "^8.22.0"
-  }
+    "name": "cmddb",
+    "version": "1.0.0",
+    "description": "Create a command line script to emulate discord bot communicating with SQL server.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "MatterMr <greymatter432@icloud.com>",
+    "license": "MIT",
+    "dependencies": {
+        "mysql": "^2.18.1",
+        "pg": "^8.7.3",
+        "pg-hstore": "^2.3.4",
+        "readline": "^1.3.0",
+        "sequelize": "^6.21.3"
+    },
+    "devDependencies": {
+        "eslint": "^8.22.0"
+    }
 }
