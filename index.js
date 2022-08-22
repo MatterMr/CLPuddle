@@ -16,7 +16,7 @@ databaseHandler.init(() => {
 	ch.queueCommands([
 		'\\model -t',
 		'\\model -d users',
-		'\\model -d pools',
+
 	]);
 	readline.on('line', (input) => {
 		ch.parseInput(input);
