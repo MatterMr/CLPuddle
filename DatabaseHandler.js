@@ -5,6 +5,7 @@ const path = require('node:path');
 
 class DatabaseHandler {
 
+
 	constructor(DATABASE, PORT, USERNAME, PASSWORD, URI) {
 		this.models = new Map();
 		this.sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
