@@ -10,8 +10,7 @@ module.exports = {
 			await globals.databaseHandler.displayModel(args[1]);
 			break;
 		case '-t':
-			await loadTemplateData()
-				.catch(() => console.log(new Error('Data already exists and cannot be overwirtten')));
+			await loadTemplateData();
 			break;
 		default:
 			console.log(globals.databaseHandler.models);
@@ -25,8 +24,15 @@ async function loadTemplateData() {
 	const User = models.get('users');
 	const Pool = models.get('pools');
 	const user = await db.createInstance(User, { discordId: 'MatterMr#2121' });
-
 	const tester = await User.create({ discordId: 'tester#2121' }, { include: Pool });
+
 	await db.createInstance(tester, { name: 'pool' }, undefined, 'Pool');
+	console.log(await db.createInstance(tester, { name: 'pool' }, undefined, 'Pool'));
 	await db.createInstance(user, { name: 'testpool' }, undefined, 'Pool');
+
+	console.log(await db.destroyInstance(tester, { name: 'pool' }, 'Poosl'));
+
+	// const pool = await Pool.findOne({ where : { name : 'pool' } });
+	// console.log(child instanceof Pool);
+	// console.log(pool instanceof Pool);
 }
