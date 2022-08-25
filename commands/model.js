@@ -21,18 +21,13 @@ module.exports = {
 async function loadTemplateData() {
 	const db = globals.databaseHandler;
 	const models = db.models;
-	const User = models.get('users');
-	const Pool = models.get('pools');
+	const User = models.user;
+	const Pool = models.pool;
+
 	const user = await db.createInstance(User, { discordId: 'MatterMr#2121' });
 	const tester = await User.create({ discordId: 'tester#2121' }, { include: Pool });
 
-	await db.createInstance(tester, { name: 'pool' }, undefined, 'Pool');
-	console.log(await db.createInstance(tester, { name: 'pool' }, undefined, 'Pool'));
-	await db.createInstance(user, { name: 'testpool' }, undefined, 'Pool');
-
-	console.log(await db.destroyInstance(tester, { name: 'pool' }, 'Poosl'));
-
-	// const pool = await Pool.findOne({ where : { name : 'pool' } });
-	// console.log(child instanceof Pool);
-	// console.log(pool instanceof Pool);
+	await db.createInstance(tester, { name: 'pool' }, 'Pool');
+	await db.createInstance(tester, { name: 'pool 1' }, 'Pool');
+	await db.createInstance(user, { name: 'testpool' }, 'Pool');
 }

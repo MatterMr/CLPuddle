@@ -6,7 +6,7 @@ const path = require('node:path');
 class DatabaseHandler {
 
 	constructor(DATABASE, PORT, USERNAME, PASSWORD, URI) {
-		this.models = new Map();
+		this.models = {};
 		this.sequelize = new Sequelize(DATABASE, USERNAME, PASSWORD, {
 			host: URI == undefined ? 'localhost' : URI,
 			dialect: 'postgres',
@@ -69,7 +69,7 @@ class DatabaseHandler {
 
 	async displayModel(name) {
 		try {
-			const model = await this.models.get(name).findAll();
+			const model = await this.models[name].findAll();
 			console.log(`${name}:`, JSON.stringify(model, null, 2));
 		}
 		catch (error) {
@@ -87,7 +87,7 @@ class DatabaseHandler {
 			const filePath = path.join(modelsPath, file);
 			const module = require(filePath);
 			const model = module(this.sequelize, DataTypes);
-			this.models.set(model.name, model);
+			this.models[model.name] = model;
 			console.log(`\t-${model.name}`);
 		}
 
@@ -98,11 +98,11 @@ class DatabaseHandler {
 			console.log('loaded relations');
 		}
 	}
-	async createInstance(source, obj, exargs, targetType) {
+	async createInstance(source, obj, childType, args) {
 		try {
 			return await this.sequelize.transaction(async (t) => {
-				return source[`create${targetType === undefined ? '' : targetType}`](
-					obj, exargs, { transaction: t });
+				return source[`create${childType === undefined ? '' : childType}`](
+					obj, args, { transaction: t });
 			});
 		}
 		catch (err) {
@@ -111,11 +111,12 @@ class DatabaseHandler {
 		}
 	}
 
-	async destroyInstance(source, obj, targetType) {
+	async destroyInstance(parent, where, childType) {
 		try {
 			const state = await this.sequelize.transaction(async (t) => {
-				if (obj === undefined) { return source.destroy({ transaction: t }); }
-				const child = await source[`get${targetType}s`]({ where: obj }, { transaction: t });
+				if (where === undefined) { return parent.destroy({ transaction: t }); }
+				const child = await parent[`get${childType}s`]({ where: where },
+					{ transaction: t });
 				if (child.length != 0) {
 					return child[0].destroy({ transaction: t });
 				}

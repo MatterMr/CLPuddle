@@ -15,8 +15,8 @@ const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 databaseHandler.init(() => {
 	ch.queueCommands([
 		'\\model -t',
-		'\\model -d users',
-		'\\model -d pools',
+		'\\model -d user',
+		'\\model -d pool',
 	]);
 	readline.on('line', (input) => {
 		ch.parseInput(input);

@@ -1,6 +1,6 @@
 module.exports = function(models) {
-	const Users = models.get('users');
-	const Pools = models.get('pools');
+	const Users = models.user;
+	const Pools = models.pool;
 
 	Users.hasMany(Pools, {
 		onDelete: 'CASCADE',
