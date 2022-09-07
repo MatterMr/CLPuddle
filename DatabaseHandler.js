@@ -41,7 +41,7 @@ class DatabaseHandler {
      */
 	errorLogger(err) {
 		if (err instanceof TypeError) {
-			console.log(`Error: ${err.name} : ${err.lineNumber} ${err.message}`);
+			console.log(`${err.name} : ${err.lineNumber} ${err.message}`);
 		}
 		else {
 			const error = err.errors[0];
@@ -49,12 +49,17 @@ class DatabaseHandler {
 		}
 
 	}
-
+	/**
+     * Destroys database contents and syncs current models
+     */
 	async destructiveSync() {
 		await this.sequelize.sync({ force: true });
 		await console.log('Destructive Sync');
 	}
-
+	/**
+     *
+     * @returns success 1, fail 0
+     */
 	async checkConnection() {
 		try {
 			await this.sequelize.authenticate();
@@ -66,7 +71,10 @@ class DatabaseHandler {
 			return 0;
 		}
 	}
-
+	/**
+     * displays table by name
+     * @param {string} name takes name of table
+     */
 	async displayModel(name) {
 		try {
 			const model = await this.models[name].findAll();
@@ -76,7 +84,9 @@ class DatabaseHandler {
 			console.log(`${name} does not exist`);
 		}
 	}
-
+	/**
+     * Asyncrounously loads all models and relations from model folder.
+     */
 	async loadModels() {
 		const modelsPath = path.join(__dirname, 'models');
 		const modelFiles = fs.readdirSync(modelsPath).filter(file => file.endsWith('.js')
@@ -98,36 +108,61 @@ class DatabaseHandler {
 			console.log('loaded relations');
 		}
 	}
+	/**
+     * Add Instance to database table, either directly or as association.
+     *
+     * @param {Table} source (Table), (Model Instance).
+     * @param {object} obj instance data.
+     * @param {string} childType Name of child model to add.
+     * @param {object} args  external args
+     * @returns 0 if falied
+     */
 	async createInstance(source, obj, childType, args) {
-		try {
-			return await this.sequelize.transaction(async (t) => {
-				return source[`create${childType === undefined ? '' : childType}`](
-					obj, args, { transaction: t });
-			});
-		}
-		catch (err) {
-			this.errorLogger(err);
-			return 0;
-		}
+
+		{return this.sequelize.transaction(async (t) => {
+			return source[`create${childType === undefined
+				? ''
+				: childType.charAt(0).toUpperCase() + childType.toLowerCase().slice(1)}`](
+				obj, args, { transaction: t });
+
+		})
+			.finally(
+				() => console.log('done\n'),
+				error => {
+
+					this.errorLogger(error);
+				},
+			);}
+	}
+	/**
+     * Remove instances from table, either directly or as association.
+     * @param {Instance} parent
+     * @param {object} where
+     * @param {string} childType
+     * @returns
+     */
+	async destroyInstance(parent, where, childType) {
+
+		const state = await this.sequelize.transaction(async (t) => {
+
+			if (where === undefined) { return parent.destroy({ transaction: t }); }
+			const child = await parent[`get${childType}s`]({ where: where },
+				{ transaction: t });
+			if (child.length != 0) {
+				return child[0].destroy({ transaction: t });
+			}
+			return 2;
+		})
+			.then(
+				() => console.log('done\n'),
+				error => { this.errorLogger(error); },
+			);
+		return state === 2 ? 2 : 1;
+
 	}
 
-	async destroyInstance(parent, where, childType) {
-		try {
-			const state = await this.sequelize.transaction(async (t) => {
-				if (where === undefined) { return parent.destroy({ transaction: t }); }
-				const child = await parent[`get${childType}s`]({ where: where },
-					{ transaction: t });
-				if (child.length != 0) {
-					return child[0].destroy({ transaction: t });
-				}
-				return 2;
-			});
-			return state === 2 ? 2 : 1;
-		}
-		catch (err) {
-			this.errorLogger(err);
-			return 0;
-		}
+	async getInstance(model, objDetails) {
+		return model.findOne({ where : objDetails });
 	}
 
 

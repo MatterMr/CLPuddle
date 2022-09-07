@@ -21,11 +21,30 @@ class CommandHandler {
 
 	async parseInput(input) {
 		if (input[0] != '\\') return;
-		const args = input.slice(1).trim().split(/\s+/);
+		const args = this.objectFormater(input, input.slice(1).trim().split(/\s+/));
 		if (!this.commands.has(args[0])) return;
 		return this.commands.get(args[0]).execute(args.slice(1), this)
-			.catch((err) => console.log(err, '\n Command Failed : Reason UNKNOWN'));
+			.catch((err) => console.log('Command Failed, Syntax Error\n', err));
+	}
 
+	objectFormater(input, args) {
+		const regex = new RegExp(/[{}]+/);
+		if (regex.test(input)) {
+			const parsable = input.split(regex);
+			const objs = [];
+			let l = 0;
+			for (let i = 1; i < parsable.length; i += 2) {
+				objs.push(parsable[i].split(', '));
+			}
+			for (let i = 1; i < args.length; i++) {
+				if (args[i][0] == '{') {
+					args[i] = objs[l];
+					args.splice(i + 1, objs[l].length - 1);
+					l++;
+				}
+			}
+		}
+		return args;
 	}
 
 	async queueCommands(args) {

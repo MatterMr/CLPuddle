@@ -5,6 +5,11 @@ module.exports = function(sequelize, DataTypes) {
 			unique: true,
 			allowNull: false,
 		},
+		osuId: {
+			type: DataTypes.INTEGER,
+			unique: true,
+			allowNull: true,
+		},
 	}, {
 		timestamps: false,
 	});
