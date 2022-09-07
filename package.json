@@ -1,5 +1,5 @@
 {
-    "name": "cmddb",
+    "name": "CLPuddle",
     "version": "1.0.0",
     "description": "Create a command line script to emulate discord bot communicating with SQL server.",
     "main": "index.js",
