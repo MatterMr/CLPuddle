@@ -24,7 +24,8 @@ class CommandHandler {
 		const args = this.objectFormater(input, input.slice(1).trim().split(/\s+/));
 		if (!this.commands.has(args[0])) return;
 		return this.commands.get(args[0]).execute(args.slice(1), this)
-			.catch((err) => console.log('Command Failed, Syntax Error\n', err));
+			.catch((err) => console.log('Command Failed, Syntax Error\n', err))
+			.then(() => console.log('\n'));
 	}
 
 	objectFormater(input, args) {

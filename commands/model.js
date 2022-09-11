@@ -40,30 +40,55 @@ function stringToModel(arr, model) {
 }
 
 async function addInstance(args, db) {
-	const model = db.models[args[1]];
-	if (args[3] == 'to') {
-		const parentModel = db.models[args[4]];
-		const source = await db.getInstance(parentModel, stringToModel(args[5], parentModel));
-		await db.createInstance(source, stringToModel(args[2], model), model.name);
+	const parentModelString = (args[3] == 'to') && args[4] !== undefined
+		? args[4].toLowerCase()
+		: undefined;
+	const sourceModelString = args[1].toLowerCase();
+	try {
+
+		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
+		if (parentModelString !== undefined && !(parentModelString in db.models)) { throw new Error('parent model does not exist'); }
+
+		const sourceModel = db.models[sourceModelString];
+
+		if (parentModelString === undefined) {
+			await db.createInstance(sourceModel, stringToModel(args[2], sourceModel));
+		}
+		else {
+			const parentModel = db.models[parentModelString];
+			const source = await db.getInstance(parentModel, stringToModel(args[5], parentModel));
+			if (source === null) { throw new Error('Failed to retrive parent instance'); }
+			await db.createInstance(source, stringToModel(args[2], sourceModel), sourceModelString);
+		}
+
 	}
-	else {
-		await db.createInstance(model, stringToModel(args[2], model));
+	catch (err) {
+		db.errorLogger(err);
 	}
 }
 async function removeInstance(args, db) {
-	const model = db.models[args[1]];
-	const source = await db.getInstance(model, stringToModel(args[2], model));
-	await db.destroyInstance(source);
+	try {
+		const sourceModelString = args[1].toLowerCase();
+		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
+		const model = db.models[sourceModelString];
+		const source = await db.getInstance(model, stringToModel(args[2], model));
+		if (source === null) { throw new Error('Failed to retrive parent instance'); }
+		await db.destroyInstance(source);
+	}
+	catch (err) {
+		db.errorLogger(err);
+	}
 }
 
 async function loadTemplateData() {
 	const db = globals.databaseHandler;
 	const models = db.models;
 
-	// const user = await db.createInstance(models.user, { discordId: 'MatterMr#2121' });
+	const user = await db.createInstance(models.user, { discordId: 'MatterMr#2121' });
 	const tester = await db.createInstance(models.user, { discordId: 'tester#2121' });
 	// console.log(Object.keys(user.uniqno));
-	await db.createInstance(tester, { name: 'pool' }, 'pools');
+	await db.createInstance(tester, { name: 'pooldd' }, 'posol');
+	// await db.destroyInstance(db.getInstance(models.pool, { name : 'ddd' }));
 	// await db.createInstance(tester, { name: 'pool 1' }, 'Pool');
 	// await db.createInstance(user, { name: 'testpool' }, 'Pool');
 }
