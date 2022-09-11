@@ -1,5 +1,5 @@
 'use strict';
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, UniqueConstraintError } = require('sequelize');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -40,14 +40,14 @@ class DatabaseHandler {
      * @param err error to be logged
      */
 	errorLogger(err) {
-		if (err instanceof TypeError) {
-			console.log(`${err.name} : ${err.lineNumber} ${err.message}`);
+		console.log('failed');
+		if (err instanceof UniqueConstraintError) {
+			const error = err.errors[0];
+			console.log(`${error.type} : ${error.value} ${error.message}`);
 		}
 		else {
-			const error = err.errors[0];
-			console.log(`Error: ${error.type} : ${error.value} ${error.message}`);
+			console.log(`${err.name} : ${err.message}`);
 		}
-
 	}
 	/**
      * Destroys database contents and syncs current models
@@ -119,20 +119,16 @@ class DatabaseHandler {
      */
 	async createInstance(source, obj, childType, args) {
 
-		{return this.sequelize.transaction(async (t) => {
-			return source[`create${childType === undefined
+		return this.sequelize.transaction(async (t) => {
+
+			t.afterCommit(() => console.log('done'));
+			return await source[`create${childType === undefined
 				? ''
-				: childType.charAt(0).toUpperCase() + childType.toLowerCase().slice(1)}`](
-				obj, args, { transaction: t });
-
+				: childType.charAt(0).toUpperCase() + childType.slice(1)}`](
+				obj, args, { transaction: t },
+			);
 		})
-			.finally(
-				() => console.log('done\n'),
-				error => {
-
-					this.errorLogger(error);
-				},
-			);}
+			.catch(err => this.errorLogger(err));
 	}
 	/**
      * Remove instances from table, either directly or as association.
@@ -144,25 +140,22 @@ class DatabaseHandler {
 	async destroyInstance(parent, where, childType) {
 
 		const state = await this.sequelize.transaction(async (t) => {
-
+			t.afterCommit(() => console.log('done'));
 			if (where === undefined) { return parent.destroy({ transaction: t }); }
-			const child = await parent[`get${childType}s`]({ where: where },
+			const child = await parent[`get${childType.charAt(0).toUpperCase() + childType.slice(1)}s`]({ where: where },
 				{ transaction: t });
 			if (child.length != 0) {
 				return child[0].destroy({ transaction: t });
 			}
 			return 2;
 		})
-			.then(
-				() => console.log('done\n'),
-				error => { this.errorLogger(error); },
-			);
+			.catch(err => this.errorLogger(err));
 		return state === 2 ? 2 : 1;
 
 	}
 
 	async getInstance(model, objDetails) {
-		return model.findOne({ where : objDetails });
+		return await model.findOne({ where : objDetails });
 	}
 
 
