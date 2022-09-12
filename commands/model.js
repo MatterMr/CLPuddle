@@ -23,6 +23,9 @@ module.exports = {
 		case '-rm': {
 			await removeInstance(args, db);
 		} break;
+		case '-mod': {
+			await modifyInstance(args, db);
+		} break;
 		default:
 			console.log(globals.databaseHandler.models);
 		}
@@ -72,12 +75,16 @@ async function removeInstance(args, db) {
 		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
 		const model = db.models[sourceModelString];
 		const source = await db.getInstance(model, stringToModel(args[2], model));
-		if (source === null) { throw new Error('Failed to retrive parent instance'); }
+		if (source === null) { throw new Error('Failed to retrive instance'); }
 		await db.destroyInstance(source);
 	}
 	catch (err) {
 		db.errorLogger(err);
 	}
+}
+
+async function modifyInstance(args, db) {
+
 }
 
 async function loadTemplateData() {
