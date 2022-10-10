@@ -6,11 +6,8 @@ module.exports = {
 	async execute(args) {
 		const db = globals.databaseHandler;
 		switch (args[0]) {
-		case '-d':
+		case '-display':
 			await globals.databaseHandler.displayModel(args[1]);
-			break;
-		case '-t':
-			await loadTemplateData();
 			break;
 		case '-att':
 			if (args[1] in db.models) {
@@ -26,6 +23,9 @@ module.exports = {
 		case '-mod': {
 			await modifyInstance(args, db);
 		} break;
+		case '-test':
+			await testCode();
+			break;
 		default:
 			console.log(globals.databaseHandler.models);
 		}
@@ -84,18 +84,19 @@ async function removeInstance(args, db) {
 }
 
 async function modifyInstance(args, db) {
-
+	try {
+		const sourceModelString = args[1].toLowerCase();
+		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
+		const model = db.models[sourceModelString];
+		const source = await db.getInstance(model, stringToModel(args[2], model));
+		if (source === null) { throw new Error('Failed to retrive instance'); }
+		await db.modifyInstance(source, stringToModel(args[3], model));
+	}
+	catch (err) {
+		db.errorLogger();
+	}
 }
 
-async function loadTemplateData() {
-	const db = globals.databaseHandler;
-	const models = db.models;
-
-	const user = await db.createInstance(models.user, { discordId: 'MatterMr#2121' });
-	const tester = await db.createInstance(models.user, { discordId: 'tester#2121' });
-	// console.log(Object.keys(user.uniqno));
-	await db.createInstance(tester, { name: 'pooldd' }, 'posol');
-	// await db.destroyInstance(db.getInstance(models.pool, { name : 'ddd' }));
-	// await db.createInstance(tester, { name: 'pool 1' }, 'Pool');
-	// await db.createInstance(user, { name: 'testpool' }, 'Pool');
+async function testCode() {
+	console.log('Running Model Tests');
 }

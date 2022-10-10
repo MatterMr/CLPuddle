@@ -121,7 +121,7 @@ class DatabaseHandler {
 
 		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
-			return await source[`create${childType === undefined
+			return source[`create${childType === undefined
 				? ''
 				: childType.charAt(0).toUpperCase() + childType.slice(1)}`](
 				obj, args, { transaction: t },
@@ -136,37 +136,27 @@ class DatabaseHandler {
      * @param {string} childType
      * @returns
      */
-	async destroyInstance(parent, where, childType) {
+	async destroyInstance(source) {
 
-		return await this.sequelize.transaction(async (t) => {
+		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
-			if (where === undefined) { return parent.destroy({ transaction: t }); }
-			const child = await parent[`get${childType.charAt(0).toUpperCase() + childType.slice(1)}s`]({ where: where },
-				{ transaction: t });
-			if (child.length != 0) {
-				return child[0].destroy({ transaction: t });
-			}
+			return source.destroy({ transaction: t });
 		})
 			.catch(err => this.errorLogger(err));
-
 	}
 
-	async modifyInstance(parent, obj, where, childType) {
+	async modifyInstance(source, obj) {
 
-		return await this.sequelize.transaction(async (t) => {
+		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
-			if (where === undefined) { return parent.destroy({ transaction: t }); }
-			const child = await parent[`get${childType.charAt(0).toUpperCase() + childType.slice(1)}s`]({ where: where },
-				{ transaction: t });
-			if (child.length != 0) {
-				return child[0].destroy({ transaction: t });
-			}
+			source.update(obj);
+			return source.save({ transaction: t });
 		})
 			.catch(err => this.errorLogger(err));
-
 	}
+
 	async getInstance(model, objDetails) {
-		return await model.findOne({ where : objDetails });
+		return model.findOne({ where : objDetails });
 	}
 
 
