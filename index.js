@@ -15,7 +15,7 @@ const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 databaseHandler.init(() => {
 	ch.queueCommands([
 		// '\\model -att pool',
-		// '\\model -add user {MatterMr#2121, 30394303}',
+		// '\\model -add user {MatterMr#2121, 30394303} -display user',
 		// '\\model -add pool {testPool} to user {MatterMr#2121}',
 		// '\\model -add pool {testPool}',
 		'\\model -test',

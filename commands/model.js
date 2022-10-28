@@ -93,7 +93,7 @@ async function modifyInstance(args, db) {
 		await db.modifyInstance(source, stringToModel(args[3], model));
 	}
 	catch (err) {
-		db.errorLogger();
+		db.errorLogger(err);
 	}
 }
 
@@ -110,8 +110,7 @@ async function testCode(db) {
 	db.displayInstance(testUser);
 	db.displayInstance(testPool);
 	console.log('Destroy Instances');
-	db.destroyInstance(testUser);
-	db.destroyInstance(testPool);
+	await db.destroyInstance(testUser);
+	await db.destroyInstance(testPool);
 	console.log('----End of Model Tests----');
-
 }

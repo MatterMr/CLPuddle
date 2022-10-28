@@ -23,7 +23,7 @@ class DatabaseHandler {
 	}
 
 	/**
-     * Allows the loading of necesary components for the database for later calls.
+     * Allows the loading of necesary components for the database and later calls.
      *
      * @param callback callback function to run after asycnronus initiation.
      */
@@ -84,6 +84,10 @@ class DatabaseHandler {
 			console.log(`${name} does not exist`);
 		}
 	}
+	/**
+     * Displays instance
+     * @param {any} instance
+     */
 	async displayInstance(instance) {
 		console.log(JSON.stringify(instance, null, 2));
 	}
@@ -114,11 +118,11 @@ class DatabaseHandler {
 	/**
      * Add Instance to database table, either directly or as association.
      *
-     * @param {Table} source (Table), (Model Instance).
+     * @param {any} source Table or Instance
      * @param {object} obj instance data.
      * @param {string} childType Name of child model to add.
      * @param {object} args  external args
-     * @returns 0 if falied
+     * @returns instance
      */
 	async createInstance(source, obj, childType, args) {
 
@@ -134,9 +138,7 @@ class DatabaseHandler {
 	}
 	/**
      * Remove instances from table, either directly or as association.
-     * @param {Instance} parent
-     * @param {object} where
-     * @param {string} childType
+     * @param {Instance} source
      * @returns
      */
 	async destroyInstance(source) {
@@ -148,11 +150,11 @@ class DatabaseHandler {
 			.catch(err => this.errorLogger(err));
 	}
 
-	async modifyInstance(source, obj) {
+	async modifyInstance(source, objDetails) {
 
 		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
-			source.update(obj);
+			source.update(objDetails);
 			return source.save({ transaction: t });
 		})
 			.catch(err => this.errorLogger(err));
