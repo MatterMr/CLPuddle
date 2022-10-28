@@ -24,7 +24,7 @@ module.exports = {
 			await modifyInstance(args, db);
 		} break;
 		case '-test':
-			await testCode();
+			await testCode(db);
 			break;
 		default:
 			console.log(globals.databaseHandler.models);
@@ -97,6 +97,21 @@ async function modifyInstance(args, db) {
 	}
 }
 
-async function testCode() {
-	console.log('Running Model Tests');
+async function testCode(db) {
+	console.log('----Running Model Tests----');
+	console.log('Creating Instances');
+	const testUser = await db.createInstance(db.models['user'], { discordId: 'TestUser' });
+	const testPool = await db.createInstance(testUser, { name: 'TestPool' }, 'pool');
+	db.displayInstance(testUser);
+	db.displayInstance(testPool);
+	console.log('Modify Instances');
+	await db.modifyInstance(testPool, { name: 'modifyedName' });
+	await db.modifyInstance(testUser, { discordId: 'modifyedUserName', osuId: '10101010' });
+	db.displayInstance(testUser);
+	db.displayInstance(testPool);
+	console.log('Destroy Instances');
+	db.destroyInstance(testUser);
+	db.destroyInstance(testPool);
+	console.log('----End of Model Tests----');
+
 }

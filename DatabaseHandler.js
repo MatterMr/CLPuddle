@@ -84,6 +84,9 @@ class DatabaseHandler {
 			console.log(`${name} does not exist`);
 		}
 	}
+	async displayInstance(instance) {
+		console.log(JSON.stringify(instance, null, 2));
+	}
 	/**
      * Asyncrounously loads all models and relations from model folder.
      */
