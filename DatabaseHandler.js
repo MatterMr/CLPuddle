@@ -139,7 +139,7 @@ class DatabaseHandler {
 	/**
      * Remove instances from table, either directly or as association.
      * @param {Instance} source
-     * @returns
+     * @returns Instance
      */
 	async destroyInstance(source) {
 
