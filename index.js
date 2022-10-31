@@ -14,18 +14,11 @@ const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 
 databaseHandler.init(() => {
 	ch.queueCommands([
-		// '\\model -att pool',
-		// '\\model -add user {MatterMr#2121, 30394303} -display user',
-		// '\\model -add pool {testPool} to user {MatterMr#2121}',
-		// '\\model -add pool {testPool}',
-		'\\model -test',
-		// '\\model -display user',
-		// '\\model -display pool',
+		// '\\model -test',
 	]);
 	readline.on('line', (input) => {
 		ch.parseInput(input);
 	});
 });
-
 
 exports.databaseHandler = databaseHandler;

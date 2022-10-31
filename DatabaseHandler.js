@@ -149,7 +149,12 @@ class DatabaseHandler {
 		})
 			.catch(err => this.errorLogger(err));
 	}
-
+	/**
+     * Replaces the instance with the contents of objDetails
+     * @param {Instance} source
+     * @param {object} objDetails
+     * @returns Instance
+     */
 	async modifyInstance(source, objDetails) {
 
 		return this.sequelize.transaction(async (t) => {
@@ -159,12 +164,15 @@ class DatabaseHandler {
 		})
 			.catch(err => this.errorLogger(err));
 	}
-
+	/**
+     * Returns an instance based on object details
+     * @param {model} model
+     * @param {object} objDetails
+     * @returns Instance
+     */
 	async getInstance(model, objDetails) {
 		return model.findOne({ where : objDetails });
 	}
-
-
 }
 
 module.exports = { DatabaseHandler };
