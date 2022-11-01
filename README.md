@@ -14,9 +14,12 @@
 
 
 ### **TODO:**
-- Add improved comments and descriptions for all functions/commands
 - Fix model stringToModel() to use keys within argument instead of using model name
 - Fix DatabaeHandler modifyInstance() to modify only specific fields
 - Add leaderboard model
 - Add score model
 
+### **Current:**
+- Rebuilding Manual system
+- Adding help command for guiding new users
+- Adding Manuals for all existing major commands
