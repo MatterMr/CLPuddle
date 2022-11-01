@@ -14,12 +14,12 @@ const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 
 databaseHandler.init(() => {
 	ch.queueCommands([
-		'\\man -s man',
-		'\\man -d man',
-		'\\man -o man',
-		'\\man -e man',
-		'\\man -s jddd',
-		'\\man -sss man',
+		// '\\man -s man',
+		// '\\man -d man',
+		// '\\man -o man',
+		// '\\man -e man',
+		// '\\man -s jddd',
+		// '\\man -sss man',
 		// '\\model -test',
 	]);
 	readline.on('line', (input) => {
