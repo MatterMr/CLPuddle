@@ -1,0 +1,22 @@
+{
+    "name": "man",
+    "synopsis": [
+        "man [COMMAND]",
+        "man [OPTION] [COMMAND]"
+    ],
+    "description": "Print manual or section of the manual based on OPTIONS and COMMAND name",
+    "options": [
+        "-l || -list",
+        "\tList all the available commands\n",
+        "-s || -synopsis",
+        "\tDisplay only the synopsis of the command\n",
+        "-d || -description",
+        "\tDisplay only the description of the command\n",
+        "-o || -options",
+        "\tDisplay only the options of the command\n"
+    ],
+    "examples": [
+        "man -l",
+        "\tLists all available commands\n"
+    ]
+}
