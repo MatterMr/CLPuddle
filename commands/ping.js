@@ -1,8 +1,9 @@
+const globals = require('../index.js');
 module.exports = {
 	'name': 'ping',
-	'desc': 'Replys with pong',
-	'params': null,
+	'synopsis': 'ping',
+	'description': 'Displays the connection status',
 	async execute() {
-		console.log('pong');
+		globals.databaseHandler.checkConnection();
 	},
 };

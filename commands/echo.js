@@ -1,7 +1,7 @@
 module.exports = {
 	'name': 'echo',
-	'desc': 'Repeats first parameter',
-	'params': '(text)',
+	'synopsis': 'echo [STRING]',
+	'description': 'Repeats the STRING parameter',
 	async execute(args) {
 		console.log(args[0]);
 	},

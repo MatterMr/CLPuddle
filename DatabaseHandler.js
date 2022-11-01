@@ -63,7 +63,7 @@ class DatabaseHandler {
 	async checkConnection() {
 		try {
 			await this.sequelize.authenticate();
-			console.log('Connection has been established successfully.');
+			console.log('Connection Secure.');
 			return 1;
 		}
 		catch (error) {
