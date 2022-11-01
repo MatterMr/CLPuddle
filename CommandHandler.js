@@ -8,7 +8,7 @@ class CommandHandler {
 		this.commandsPath = path.join(__dirname, 'commands');
 		this.manualsPath = path.join(this.commandsPath, 'manuals');
 		this.commandFiles = fs.readdirSync(this.commandsPath).filter(file => file.endsWith('.js'));
-		this.manualsFiles = fs.readdirSync(this.manualsPath).filter(file => file.endsWith('.json'));
+		this.manualFiles = fs.readdirSync(this.manualsPath).filter(file => file.endsWith('.json'));
 		this.commands = new Map();
 		this.setCommands();
 	}
@@ -29,7 +29,7 @@ class CommandHandler {
      */
 	loadManuals() {
 		const manuals = new Map();
-		for (const file of this.manualsFiles) {
+		for (const file of this.manualFiles) {
 			const filePath = path.join(this.manualsPath, file);
 			const raw = fs.readFileSync(filePath);
 			const manual = JSON.parse(raw);
