@@ -1,0 +1,28 @@
+{
+    "name": "model",
+    "synopsis": [
+        "\\model [OPTION]",
+        "\\model [OPTION] [MODEL] [INSTANCE]",
+        "\\model [OPTION] [MODEL] [INSTANCE] to [MODEL] [INSTANCE]"
+    ],
+    "description": "CRUD for modifying model/table data from the database, Uses INSTANCE datatype",
+    "options": [
+        "[EMPTY]",
+        "\tDisplay all models\n",
+        "-d || -display [MODEL]",
+        "\tDisplays the data stored in the specified [MODEL]\n",
+        "-att || -attributes [MODEL]",
+        "\tDisplays the attributes of a models instances\n",
+        "-add [MODEL] [INSTANCE] || -add [MODEL] [INSTANCE] to [MODEL] [INSTANCE]",
+        "\tAdds a data instance to the MODEL, either directly or by association to another instance\n",
+        "-rm [MODEL] [INSTANCE]",
+        "\tRemoves a data instance from the MODEL\n",
+        "-mod || -modify [MODEL] [INSTANCE]",
+        "\tModifys a data instance from the MODEL\n",
+        "-test",
+        "\tRuns model tests **Should update in the future**\n"
+    ],
+    "examples": [
+        "LOL"
+    ]
+}

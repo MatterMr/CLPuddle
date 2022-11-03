@@ -1,17 +1,7 @@
 const globals = require('../index.js');
 module.exports = {
 	'name': 'model',
-	'synopsis': `
-        model [-display, test]
-        model [-att] [MODEL]
-        model [-add, rm, mod] [MODEL] [INSTANCE]
-        model [OPTION] [MODEL] [CHILD_INSTANCE] to [PARENT_INSTANCE]`,
-	'description': `
-        Edit the data for specfic models in the database occording to OPTIONS and INSTANCE constructor
-        Instance Constructor: {key : value, ...}
-        -test : Wipes database, loads template data, modifys data, removes data. This is for testing
-        \tpurposes only.
-        -`,
+	'manual': 'null',
 	async execute(args) {
 		const db = globals.databaseHandler;
 		switch (args[0]) {
