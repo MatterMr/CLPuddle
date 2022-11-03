@@ -1,7 +1,13 @@
 {
     "name": "ping",
-    "synopsis": [],
-    "description": "",
-    "options": [],
-    "examples": []
+    "synopsis": [
+        "\\ping"
+    ],
+    "description": "Checks server connection",
+    "options": [
+        "[none]"
+    ],
+    "examples": [
+        "LOL"
+    ]
 }

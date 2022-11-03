@@ -1,0 +1,13 @@
+{
+    "name": "echo",
+    "synopsis": [
+        "\\echo [STRING]"
+    ],
+    "description": "Repeats the STRING value: Not really relavant just cool",
+    "options": [
+        "NONE"
+    ],
+    "examples": [
+        "LOL"
+    ]
+}
