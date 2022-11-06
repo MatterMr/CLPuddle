@@ -54,7 +54,7 @@ async function addInstance(args, db) {
 		const sourceModel = db.models[sourceModelString];
 
 		if (parentModelString === undefined) {
-			await db.createInstance(sourceModel, stringToModel(args[2], sourceModel));
+			await db.createInstance(sourceModel, args[2]);
 		}
 		else {
 			const parentModel = db.models[parentModelString];
