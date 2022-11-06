@@ -61,32 +61,40 @@ class CommandHandler {
      */
 	async parseInput(input) {
 		if (input[0] != '\\') return;
-		const args = this.objectFormater(input, input.slice(1).trim().split(/\s+/));
+		input = input.slice(1);
+		console.log(input);
+		const args = this.objectFormater(input);
+		console.log(args);
 		if (!this.commands.has(args[0])) return;
-		this.commands.get(args[0]).execute(args.slice(1), this)
+		this.commands.get(args[0]).execute(args.splice(1), this)
 			.catch ((err) => console.log('Command Failed, Syntax Error\n', err));
 	}
 	/**
      *
      * @param {String} input
      * @param {} args
-     * @returns
+     * @returns formatter args
      */
-	objectFormater(input, args) {
-		const regex = new RegExp(/[{}]+/);
-		if (regex.test(input)) {
-			const parsable = input.split(regex);
-			const objs = [];
-			let l = 0;
-			for (let i = 1; i < parsable.length; i += 2) {
-				objs.push(parsable[i].split(', '));
-			}
-			for (let i = 1; i < args.length; i++) {
-				if (args[i][0] == '{') {
-					args[i] = objs[l];
-					args.splice(i + 1, objs[l].length - 1);
-					l++;
-				}
+	objectFormater(input) {
+		const regex = new RegExp(/\s/);
+		const parsable = input.split(regex);
+		const args = [];
+		let isObj = false;
+		let objString = '';
+		for (let s of parsable) {
+			const wasObj = isObj;
+			isObj = s[0] == '{' || s[s.length - 1] == '}' ? !isObj : isObj;
+			s = s.replace(/[{}]/g, '');
+			if (isObj || wasObj) {objString += s;}
+			else {args.push(s);}
+			if (wasObj != isObj && wasObj) {
+				const obj = {};
+				objString.split(',').forEach(function(property) {
+					const tup = property.split(':');
+					obj[tup[0]] = tup[1];
+				});
+				args.push(obj);
+				objString = '';
 			}
 		}
 		return args;
