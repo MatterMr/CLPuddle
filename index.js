@@ -14,8 +14,10 @@ const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 
 databaseHandler.init(() => {
 	ch.queueCommands([
-		// '\\model -add user {name:     MatterMr,    id:    9339393} blaa blaa {dkddkdk, ddkdkdd}',
-		'\\model -add user {discordId : MatterMr, osuId: 48848448}',
+		'\\model -add user {discordId : MatterMr, osuId: 1234}',
+		'\\model -check user {osuId: 1234}',
+		// '\\model -test',
+		// '\\model -add user {discordId : MatterMr, osuId: 48848448}',
 	]);
 	readline.on('line', (input) => {
 		ch.parseInput(input);

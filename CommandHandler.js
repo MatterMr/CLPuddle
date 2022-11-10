@@ -62,11 +62,9 @@ class CommandHandler {
 	async parseInput(input) {
 		if (input[0] != '\\') return;
 		input = input.slice(1);
-		console.log(input);
 		const args = this.objectFormater(input);
-		console.log(args);
 		if (!this.commands.has(args[0])) return;
-		this.commands.get(args[0]).execute(args.splice(1), this)
+		await this.commands.get(args[0]).execute(args.splice(1), this)
 			.catch ((err) => console.log('Command Failed, Syntax Error\n', err));
 	}
 	/**

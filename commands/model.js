@@ -22,6 +22,9 @@ module.exports = {
 		case '-mod': {
 			await modifyInstance(args, db);
 		} break;
+		case '-check': {
+			await checkInstance(args, db);
+		} break;
 		case '-test':
 			await testCode(db);
 			break;
@@ -90,6 +93,19 @@ async function modifyInstance(args, db) {
 		const source = await db.getInstance(model, stringToModel(args[2], model));
 		if (source === null) { throw new Error('Failed to retrive instance'); }
 		await db.modifyInstance(source, stringToModel(args[3], model));
+	}
+	catch (err) {
+		db.errorLogger(err);
+	}
+}
+async function checkInstance(args, db) {
+	try {
+		const sourceModelString = args[1].toLowerCase();
+		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
+		const model = db.models[sourceModelString];
+		const source = await db.getInstance(model, args[2]);
+		if (source === null) { throw new Error('Failed to retrive instance'); }
+		console.log(`Instance Exists ${source != null}`);
 	}
 	catch (err) {
 		db.errorLogger(err);
