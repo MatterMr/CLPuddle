@@ -14,9 +14,12 @@
 
 
 ### **TODO:**
+- Fix DatabaeHandler modifyInstance() to modify only specific fields
 - Fix model stringToModel() to use keys within argument instead of using model name
 - Add leaderboard model
 - Add score model
 
 ### **Current:**
-- Fix DatabaeHandler modifyInstance() to modify only specific fields
+- Add validate instance to make sure created instances are compatible with the model.
+- Expand Error handeling to handle several errors
+

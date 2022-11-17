@@ -100,12 +100,11 @@ async function modifyInstance(args, db) {
 }
 async function checkInstance(args, db) {
 	try {
-		const sourceModelString = args[1].toLowerCase();
-		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
-		const model = db.models[sourceModelString];
-		const source = await db.getInstance(model, args[2]);
-		if (source === null) { throw new Error('Failed to retrive instance'); }
-		console.log(`Instance Exists ${source != null}`);
+        const sourceModelString = args[1].toLowerCase();
+        const model = db.getModel(sourceModelString);
+        const instance = db.validateInstance(model, args[2])
+        const source = await db.getInstance(model, instance);
+		console.log(`Instance ${source != null?'exists':'does not exist'}`);
 	}
 	catch (err) {
 		db.errorLogger(err);
@@ -113,19 +112,19 @@ async function checkInstance(args, db) {
 }
 
 async function testCode(db) {
-	console.log('----Running Model Tests----');
-	console.log('Creating Instances');
-	const testUser = await db.createInstance(db.models['user'], { discordId: 'TestUser' });
-	const testPool = await db.createInstance(testUser, { name: 'TestPool' }, 'pool');
-	db.displayInstance(testUser);
-	db.displayInstance(testPool);
-	console.log('Modify Instances');
-	await db.modifyInstance(testPool, { name: 'modifyedName' });
-	await db.modifyInstance(testUser, { discordId: 'modifyedUserName', osuId: '10101010' });
-	db.displayInstance(testUser);
-	db.displayInstance(testPool);
-	console.log('Destroy Instances');
-	await db.destroyInstance(testUser);
-	await db.destroyInstance(testPool);
+    console.log('----Running Model Tests----');
+	// console.log('Creating Instances');
+	// const testUser = await db.createInstance(db.models['user'], { discordId: 'TestUser' });
+	// const testPool = await db.createInstance(testUser, { name: 'TestPool' }, 'pool');
+	// db.displayInstance(testUser);
+	// db.displayInstance(testPool);
+	// console.log('Modify Instances');
+	// await db.modifyInstance(testPool, { name: 'modifyedName' });
+	// await db.modifyInstance(testUser, { discordId: 'modifyedUserName', osuId: '10101010' });
+	// db.displayInstance(testUser);
+	// db.displayInstance(testPool);
+	// console.log('Destroy Instances');
+	// await db.destroyInstance(testUser);
+	// await db.destroyInstance(testPool);
 	console.log('----End of Model Tests----');
 }

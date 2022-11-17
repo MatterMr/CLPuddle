@@ -39,15 +39,21 @@ class DatabaseHandler {
      *
      * @param err error to be logged
      */
-	errorLogger(err) {
-		console.log('failed');
-		if (err instanceof UniqueConstraintError) {
-			const error = err.errors[0];
-			console.log(`${error.type} : ${error.value} ${error.message}`);
-		}
-		else {
-			console.log(`${err.name} : ${err.message}`);
-		}
+    errorLogger(err) {
+        if (err instanceof Array) {err.forEach((err) => {this.errorLogger(err);})
+        // ***This may come back to haunt me***
+        } else if (err instanceof Error) {
+            switch (typeof err) {
+                case UniqueConstraintError:
+                    const error = err.errors[0];
+                    console.log(`${error.type} : ${error.value} ${error.message}`);
+                    break;
+                default:
+                    console.log(`${err.name} : ${err.message}`);
+                    break;
+            }
+        }
+
 	}
 	/**
      * Destroys database contents and syncs current models
@@ -156,7 +162,6 @@ class DatabaseHandler {
      * @returns Instance
      */
 	async modifyInstance(source, objDetails) {
-
 		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
 			source.update(objDetails);
@@ -167,12 +172,30 @@ class DatabaseHandler {
 	/**
      * Returns an instance based on object details
      * @param {model} model
-     * @param {object} objDetails
+     * @param {object} instance
      * @returns Instance
      */
-	async getInstance(model, objDetails) {
-		return model.findOne({ where : objDetails });
-	}
+    async getInstance(model, instance) {
+		return model.findOne({ where : instance });
+    }
+    /**
+     * Validates that the model and instance are compatible with the database
+     * @param {String} model
+     * @param {object} instance
+     */
+    validateInstance(model, instance) {
+        let errors = [];
+        for (let key in instance) { if (!(key in model.rawAttributes)) { errors.push(new Error(`key { ${key} } does not exist`)) } }
+        if (errors.length > 0) { throw errors; }
+    }
+    /**
+     *
+     * @param {String} model
+     */
+    getModel(model) {
+        if (!(model in this.models)) { throw new Error(`model { ${model} } does not exist`); }
+        return this.models[model];
+    }
 }
 
 module.exports = { DatabaseHandler };
