@@ -104,7 +104,7 @@ async function checkInstance(args, db) {
         const model = db.getModel(sourceModelString);
         const instance = db.validateInstance(model, args[2])
         const source = await db.getInstance(model, instance);
-		console.log(`Instance ${source != null?'exists':'does not exist'}`);
+		console.log(`Instance ${source != undefined?'exists':'does not exist'}`);
 	}
 	catch (err) {
 		db.errorLogger(err);
