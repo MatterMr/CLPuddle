@@ -94,7 +94,7 @@ class CommandHandler {
 				args.push(obj);
 				objString = '';
 			}
-		}
+        }
 		return args;
 	}
 
