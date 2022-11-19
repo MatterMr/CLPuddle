@@ -185,8 +185,20 @@ class DatabaseHandler {
      */
     validateInstance(model, instance) {
         let errors = [];
-        for (let key in instance) { if (!(key in model.rawAttributes)) { errors.push(new Error(`key { ${key} } does not exist`)) } }
+        if (instance == undefined) { throw new Error('instance is empty or cannot be parsed') }
+        for (let key in instance) {
+            if (!(key in model.getAttributes())) {
+                errors.push(new Error(`key { ${key} } does not exist`))
+            } else {
+                let dbType = model.getAttributes()[key].type.constructor.name;
+                let value = instance[key];
+                if (dbType == "INTEGER" && isNaN(+value)) {
+                    errors.push(new Error(`value { ${value} } cannot be parsed to INTEGER`));
+                }
+            }
+        }
         if (errors.length > 0) { throw errors; }
+        return instance;
     }
     /**
      *
