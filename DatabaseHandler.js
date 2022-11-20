@@ -171,11 +171,13 @@ class DatabaseHandler {
 	/**
      * Returns an instance based on object details
      * @param {model} model
-     * @param {object} instance
+     * @param {object} data
      * @returns Instance
      */
-    async getInstance(model, instance) {
-		return model.findOne({ where : instance });
+    async getInstance(model, data) {
+        const instance = await model.findOne({ where: data });
+        if (instance == null) { throw new Error(`Instance does not exist`); }
+        return instance;
     }
     /**
      * Validates that the model and instance are compatible with the database
