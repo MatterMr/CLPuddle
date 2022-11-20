@@ -7,20 +7,15 @@ const readline = require('readline').createInterface({
 const { CommandHandler } = require('./CommandHandler.js');
 const { DatabaseHandler } = require('./DatabaseHandler');
 const { DATABASE, PORT, USERNAME, PASSWORD } = require('./config.json');
+const { UNIT_TEST, ACTIVE_TEST } = require('./tests.json');
 
 
 const ch = new CommandHandler();
 const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 
 databaseHandler.init(() => {
-	ch.queueCommands([
-        '\\model -add user {discordId : MatterMr, osuId: 1234}',
-        '\\model -add user {discordId : Shiggy, osuId: 2829032}',
-        '\\model -add pool {name : testPool} to user {osuId: 1234}',
-		'\\model -check pool {name : testPool}',
-		// '\\model -test',
-		// '\\model -add user {discordId : MatterMr, osuId: 48848448}',
-	]);
+    ch.queueCommands(ACTIVE_TEST);
+    ch.queueCommands(UNIT_TEST);
 	readline.on('line', (input) => {
 		ch.parseInput(input);
 	});
