@@ -14,7 +14,8 @@
 
 
 ### **TODO:**
+- Add leaderboard model
 - Add score model
 
 ### **Current:**
-- Add leaderboard model
+- Add getAssociations Command
