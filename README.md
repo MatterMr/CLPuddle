@@ -1,6 +1,6 @@
 # CLPuddle
 ### **Description:**
-    Command Line tool for Puddle discord bot. Intended for testing, designing and managing osu puddles.
+    Command Line tool for Puddle discord bot. Intended for testing, designing and managing osu puddles. Osu puddles are collections of user created map-pools that store leaderboard data. The intention is to create a system for groups of leaderboards for friends.
 ### **Goals:**
 - Create a system for storing custom leaderboards and pools for OSU
 - Command Line tool for accesing the Puddle API
@@ -14,8 +14,7 @@
 
 
 ### **TODO:**
-- Add leaderboard model
 - Add score model
 
 ### **Current:**
-- Fix all the (CRUD) functions within the model command
+- Add leaderboard model
