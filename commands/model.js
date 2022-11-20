@@ -33,28 +33,20 @@ module.exports = {
 		}
 	},
 };
-function stringToModel(arr, model) {
-	const obj = {};
-	let index = 0;
-	for (const key in model.uniqueKeys) {
-		obj[model.uniqueKeys[key].column] = arr[index];
-		index++;
-		if (index > arr.length - 1) {break;}
-	}
-	return obj;
-}
 
 async function addInstance(args, db) {
     try {
         const baseModelString = args[1].toLowerCase();
         const baseModel = db.getModel(baseModelString);
-        const baseInstance = db.validateInstance(baseModel, args[2]);
+        const baseData = db.validateInstance(baseModel, args[2]);
         var source = baseModel;
         if (args[3] == 'to') {
             const parentModel = db.getModel(args[4].toLowerCase());
-            source = await db.getInstance(parentModel, args[5]);
+            const parentData = db.validateInstance(parentModel, args[5])
+            const parentInstance = await db.getInstance(parentModel, parentData);
+            source = parentInstance;
         }
-        await db.createInstance(source, baseInstance, (source != baseModel ? baseModelString : undefined));
+        await db.createInstance(source, baseData, (source != baseModel ? baseModelString : undefined));
 	}
 	catch (err) {
 		db.errorLogger(err);
@@ -62,12 +54,12 @@ async function addInstance(args, db) {
 }
 async function removeInstance(args, db) {
 	try {
-		const sourceModelString = args[1].toLowerCase();
-		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
-		const model = db.models[sourceModelString];
-		const source = await db.getInstance(model, stringToModel(args[2], model));
-		if (source === null) { throw new Error('Failed to retrive instance'); }
-		await db.destroyInstance(source);
+        const baseModelString = args[1].toLowerCase();
+        const baseModel = db.getModel(baseModelString);
+        const baseData = db.validateInstance(baseModel, args[2])
+        const source = await db.getInstance(baseModel, baseData);
+        console.log(source);
+        await db.destroyInstance(source);
 	}
 	catch (err) {
 		db.errorLogger(err);
@@ -76,12 +68,13 @@ async function removeInstance(args, db) {
 
 async function modifyInstance(args, db) {
 	try {
-		const sourceModelString = args[1].toLowerCase();
-		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
-		const model = db.models[sourceModelString];
-		const source = await db.getInstance(model, stringToModel(args[2], model));
-		if (source === null) { throw new Error('Failed to retrive instance'); }
-		await db.modifyInstance(source, stringToModel(args[3], model));
+        if (args[3] != 'to') { throw new Error('Incorrect syntax'); }
+        const baseModelString = args[1].toLowerCase();
+        const baseModel = db.getModel(baseModelString);
+        const baseData = db.validateInstance(baseModel, args[2]);
+        const replacementData = db.validateInstance(baseModel, args[4]);
+        const baseInstance = await db.getInstance(baseModel, baseData);
+        await db.modifyInstance(baseInstance, replacementData);
 	}
 	catch (err) {
 		db.errorLogger(err);
