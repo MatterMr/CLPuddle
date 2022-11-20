@@ -1,5 +1,5 @@
 'use strict';
-const { Sequelize, DataTypes, UniqueConstraintError } = require('sequelize');
+const { Sequelize, DataTypes, UniqueConstraintError, Model } = require('sequelize');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -130,8 +130,7 @@ class DatabaseHandler {
      * @param {object} args  external args
      * @returns instance
      */
-	async createInstance(source, obj, childType, args) {
-
+    async createInstance(source, obj, childType, args) {
 		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
 			return source[`create${childType === undefined
@@ -180,7 +179,7 @@ class DatabaseHandler {
     }
     /**
      * Validates that the model and instance are compatible with the database
-     * @param {String} model
+     * @param {Model} model
      * @param {object} instance
      */
     validateInstance(model, instance) {

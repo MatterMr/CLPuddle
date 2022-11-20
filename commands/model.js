@@ -45,27 +45,16 @@ function stringToModel(arr, model) {
 }
 
 async function addInstance(args, db) {
-	const parentModelString = (args[3] == 'to') && args[4] !== undefined
-		? args[4].toLowerCase()
-		: undefined;
-	const sourceModelString = args[1].toLowerCase();
-	try {
-
-		if (!(sourceModelString in db.models)) { throw new Error('Source model does not exist'); }
-		if (parentModelString !== undefined && !(parentModelString in db.models)) { throw new Error('parent model does not exist'); }
-
-		const sourceModel = db.models[sourceModelString];
-
-		if (parentModelString === undefined) {
-			await db.createInstance(sourceModel, args[2]);
-		}
-		else {
-			const parentModel = db.models[parentModelString];
-			const source = await db.getInstance(parentModel, stringToModel(args[5], parentModel));
-			if (source === null) { throw new Error('Failed to retrive parent instance'); }
-			await db.createInstance(source, stringToModel(args[2], sourceModel), sourceModelString);
-		}
-
+    try {
+        const baseModelString = args[1].toLowerCase();
+        const baseModel = db.getModel(baseModelString);
+        const baseInstance = db.validateInstance(baseModel, args[2]);
+        var source = baseModel;
+        if (args[3] == 'to') {
+            const parentModel = db.getModel(args[4].toLowerCase());
+            source = await db.getInstance(parentModel, args[5]);
+        }
+        await db.createInstance(source, baseInstance, (source != baseModel ? baseModelString : undefined));
 	}
 	catch (err) {
 		db.errorLogger(err);
@@ -96,14 +85,13 @@ async function modifyInstance(args, db) {
 	}
 	catch (err) {
 		db.errorLogger(err);
-	}
+    }
 }
 async function checkInstance(args, db) {
 	try {
-        const sourceModelString = args[1].toLowerCase();
-        const model = db.getModel(sourceModelString);
-        const instance = db.validateInstance(model, args[2])
-        const source = await db.getInstance(model, instance);
+        const baseModel = db.getModel(args[1].toLowerCase());
+        const baseInstance = db.validateInstance(baseModel, args[2])
+        const source = await db.getInstance(baseModel, baseInstance);
 		console.log(`Instance ${source != undefined?'exists':'does not exist'}`);
 	}
 	catch (err) {
