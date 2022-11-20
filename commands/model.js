@@ -25,9 +25,6 @@ module.exports = {
 		case '-check': {
 			await checkInstance(args, db);
 		} break;
-		case '-test':
-			await testCode(db);
-			break;
 		default:
 			console.log(globals.databaseHandler.models);
 		}
@@ -90,22 +87,4 @@ async function checkInstance(args, db) {
 	catch (err) {
 		db.errorLogger(err);
 	}
-}
-
-async function testCode(db) {
-    console.log('----Running Model Tests----');
-	// console.log('Creating Instances');
-	// const testUser = await db.createInstance(db.models['user'], { discordId: 'TestUser' });
-	// const testPool = await db.createInstance(testUser, { name: 'TestPool' }, 'pool');
-	// db.displayInstance(testUser);
-	// db.displayInstance(testPool);
-	// console.log('Modify Instances');
-	// await db.modifyInstance(testPool, { name: 'modifyedName' });
-	// await db.modifyInstance(testUser, { discordId: 'modifyedUserName', osuId: '10101010' });
-	// db.displayInstance(testUser);
-	// db.displayInstance(testPool);
-	// console.log('Destroy Instances');
-	// await db.destroyInstance(testUser);
-	// await db.destroyInstance(testPool);
-	console.log('----End of Model Tests----');
 }
