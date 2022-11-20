@@ -7,15 +7,14 @@ const readline = require('readline').createInterface({
 const { CommandHandler } = require('./CommandHandler.js');
 const { DatabaseHandler } = require('./DatabaseHandler');
 const { DATABASE, PORT, USERNAME, PASSWORD } = require('./config.json');
-const { UNIT_TEST, ACTIVE_TEST } = require('./tests.json');
+const { TEST_MODE, UNIT_TEST, ACTIVE_TEST } = require('./tests.json');
 
 
 const ch = new CommandHandler();
 const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 
 databaseHandler.init(() => {
-    ch.queueCommands(ACTIVE_TEST);
-    ch.queueCommands(UNIT_TEST);
+    ch.queueCommands(TEST_MODE? UNIT_TEST : ACTIVE_TEST);
 	readline.on('line', (input) => {
 		ch.parseInput(input);
 	});
