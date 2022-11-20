@@ -31,7 +31,7 @@ class DatabaseHandler {
 		await this.checkConnection();
 		await this.loadModels();
 		await this.destructiveSync();
-		callback.bind(this)();
+		await callback.bind(this)();
 	}
 
 	/**
