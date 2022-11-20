@@ -98,8 +98,8 @@ class CommandHandler {
 		return args;
 	}
 
-	async queueCommands(args) {
-		for (const command of args) {
+    async queueCommands(commands) {
+		for (const command of commands) {
 			console.log(command);
 			await this.parseInput(command);
 		}
