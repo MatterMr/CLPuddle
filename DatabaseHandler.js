@@ -180,7 +180,9 @@ class DatabaseHandler {
         return instance;
     }
     async getAssociations(source, targetModel) {
+        console.log();
         const targetModelString = targetModel.name;
+        if(targetModelString == source.constructor.name) {throw new Error('target model cannot be the type of the instance')}
         return await source[`get${targetModelString.charAt(0).toUpperCase() + targetModelString.slice(1)}s`]();
     }
     /**
