@@ -4,27 +4,33 @@ module.exports = {
 	'manual': 'null',
 	async execute(args) {
 		const db = globals.databaseHandler;
-		switch (args[0]) {
+        switch (args[0]) {
+        case '-d':
 		case '-display':
 			await globals.databaseHandler.displayModel(args[1]);
 			break;
-		case '-att':
+        case '-att':
+        case '-attributes':
 			if (args[1] in db.models) {
 				console.log(db.models[args[1]].uniqueKeys);
-			}
-			break;
+			} break;
 		case '-add': {
 			await addInstance(args, db);
 		} break;
 		case '-rm': {
 			await removeInstance(args, db);
 		} break;
-		case '-mod': {
+        case '-mod':
+        case '-modify': {
 			await modifyInstance(args, db);
 		} break;
 		case '-check': {
 			await checkInstance(args, db);
-		} break;
+        } break;
+        case '-association':
+        case '-as': {
+            await getAssociations(args, db);
+        } break;
 		default:
 			console.log(globals.databaseHandler.models);
 		}
@@ -55,7 +61,6 @@ async function removeInstance(args, db) {
         const baseModel = db.getModel(baseModelString);
         const baseData = db.validateInstance(baseModel, args[2])
         const source = await db.getInstance(baseModel, baseData);
-        console.log(source);
         await db.destroyInstance(source);
 	}
 	catch (err) {
@@ -75,6 +80,22 @@ async function modifyInstance(args, db) {
 	}
 	catch (err) {
 		db.errorLogger(err);
+    }
+}
+async function getAssociations(args, db) {
+    try {
+        const baseModelString = args[1].toLowerCase();
+        const baseModel = db.getModel(baseModelString);
+        const baseData = db.validateInstance(baseModel, args[2]);
+        const baseInstance = await db.getInstance(baseModel, baseData);
+        const targetModelString = args[3].toLowerCase();
+        const targetModel = db.getModel(targetModelString);
+        const associations = await db.getAssociations(baseInstance, targetModel);
+        associations.forEach((instance) => {
+            console.log(instance.dataValues);
+        });
+    } catch (err) {
+        db.errorLogger(err);
     }
 }
 async function checkInstance(args, db) {
