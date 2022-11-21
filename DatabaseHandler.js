@@ -179,27 +179,31 @@ class DatabaseHandler {
         if (instance == null) { throw new Error(`Instance does not exist`); }
         return instance;
     }
+    async getAssociations(source, targetModel) {
+        const targetModelString = targetModel.name;
+        return await source[`get${targetModelString.charAt(0).toUpperCase() + targetModelString.slice(1)}s`]();
+    }
     /**
      * Validates that the model and instance are compatible with the database
      * @param {Model} model
      * @param {object} instance
      */
-    validateInstance(model, instance) {
+    validateInstance(model, data) {
         let errors = [];
-        if (instance == undefined) { throw new Error('instance is empty or cannot be parsed') }
-        for (let key in instance) {
+        if (data == undefined) { throw new Error('instance is empty or cannot be parsed') }
+        for (let key in data) {
             if (!(key in model.getAttributes())) {
                 errors.push(new Error(`key { ${key} } does not exist`))
             } else {
                 let dbType = model.getAttributes()[key].type.constructor.name;
-                let value = instance[key];
+                let value = data[key];
                 if (dbType == "INTEGER" && isNaN(+value)) {
                     errors.push(new Error(`value { ${value} } cannot be parsed to INTEGER`));
                 }
             }
         }
         if (errors.length > 0) { throw errors; }
-        return instance;
+        return data;
     }
     /**
      *
