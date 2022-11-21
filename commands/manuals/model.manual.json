@@ -19,8 +19,8 @@
         "\tRemoves a data instance from the MODEL\n",
         "-mod || -modify [MODEL] [INSTANCE]",
         "\tModifys a data instance from the MODEL\n",
-        "-test",
-        "\tRuns model tests **Should update in the future**\n"
+        "-as || -association [MODEL] [INSTANCE] [MODEL]",
+        "\tDisplays all associated instances based on the target MODEL"
     ],
     "examples": [
         "LOL"
