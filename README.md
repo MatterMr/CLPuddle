@@ -19,3 +19,4 @@ Command Line tool for Puddle discord bot. Intended for testing, designing and ma
 - Add score model
 
 ### **Current:**
+- Create APIHandler for the puddle application to interact with the OSU api. Mainly to learn the structure of the OSUAPI to format the puddle database accordingly.
