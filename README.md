@@ -20,3 +20,4 @@ Command Line tool for Puddle discord bot. Intended for testing, designing and ma
 
 ### **Current:**
 - Create APIHandler for the puddle application to interact with the OSU api. Mainly to learn the structure of the OSUAPI to format the puddle database accordingly.
+- Convert the Project into a JS CLI, possibly rust or bash based script for the future.
