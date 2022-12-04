@@ -1,5 +1,5 @@
 'use strict';
-const { Sequelize, DataTypes, UniqueConstraintError, Model } = require('sequelize');
+const { Sequelize, DataTypes, UniqueConstraintError } = require('sequelize');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -39,20 +39,23 @@ class DatabaseHandler {
      *
      * @param err error to be logged
      */
-    errorLogger(err) {
-        if (err instanceof Array) {err.forEach((err) => {this.errorLogger(err);})
-        // ***This may come back to haunt me***
-        } else if (err instanceof Error) {
-            switch (typeof err) {
-                case UniqueConstraintError:
-                    const error = err.errors[0];
-                    console.log(`${error.type} : ${error.value} ${error.message}`);
-                    break;
-                default:
-                    console.log(`${err.name} : ${err.message}`);
-                    break;
-            }
-        }
+	errorLogger(err) {
+		if (err instanceof Array) {
+			err.forEach((err) => {this.errorLogger(err);});
+			// ***This may come back to haunt me***
+		}
+		else if (err instanceof Error) {
+			switch (typeof err) {
+			case UniqueConstraintError:
+				// eslint-disable-next-line no-case-declarations
+				const error = err.errors[0];
+				console.log(`${error.type} : ${error.value} ${error.message}`);
+				break;
+			default:
+				console.log(`${err.name} : ${err.message}`);
+				break;
+			}
+		}
 
 	}
 	/**
@@ -130,7 +133,7 @@ class DatabaseHandler {
      * @param {object} args  external args
      * @returns instance
      */
-    async createInstance(source, obj, childType, args) {
+	async createInstance(source, obj, childType, args) {
 		return this.sequelize.transaction(async (t) => {
 			t.afterCommit(() => console.log('done'));
 			return source[`create${childType === undefined
@@ -174,47 +177,48 @@ class DatabaseHandler {
      * @param {object} data
      * @returns Instance
      */
-    async getInstance(model, data) {
-        const instance = await model.findOne({ where: data });
-        if (instance == null) { throw new Error(`Instance does not exist`); }
-        return instance;
-    }
-    async getAssociations(source, targetModel) {
-        console.log();
-        const targetModelString = targetModel.name;
-        if(targetModelString == source.constructor.name) {throw new Error('target model cannot be the type of the instance')}
-        return await source[`get${targetModelString.charAt(0).toUpperCase() + targetModelString.slice(1)}s`]();
-    }
-    /**
+	async getInstance(model, data) {
+		const instance = await model.findOne({ where: data });
+		if (instance == null) { throw new Error('Instance does not exist'); }
+		return instance;
+	}
+	async getAssociations(source, targetModel) {
+		console.log();
+		const targetModelString = targetModel.name;
+		if (targetModelString == source.constructor.name) {throw new Error('target model cannot be the type of the instance');}
+		return await source[`get${targetModelString.charAt(0).toUpperCase() + targetModelString.slice(1)}s`]();
+	}
+	/**
      * Validates that the model and instance are compatible with the database
      * @param {Model} model
      * @param {object} instance
      */
-    validateInstance(model, data) {
-        let errors = [];
-        if (data == undefined) { throw new Error('instance is empty or cannot be parsed') }
-        for (let key in data) {
-            if (!(key in model.getAttributes())) {
-                errors.push(new Error(`key { ${key} } does not exist`))
-            } else {
-                let dbType = model.getAttributes()[key].type.constructor.name;
-                let value = data[key];
-                if (dbType == "INTEGER" && isNaN(+value)) {
-                    errors.push(new Error(`value { ${value} } cannot be parsed to INTEGER`));
-                }
-            }
-        }
-        if (errors.length > 0) { throw errors; }
-        return data;
-    }
-    /**
+	validateInstance(model, data) {
+		const errors = [];
+		if (data == undefined) { throw new Error('instance is empty or cannot be parsed'); }
+		for (const key in data) {
+			if (!(key in model.getAttributes())) {
+				errors.push(new Error(`key { ${key} } does not exist`));
+			}
+			else {
+				const dbType = model.getAttributes()[key].type.constructor.name;
+				const value = data[key];
+				if (dbType == 'INTEGER' && isNaN(+value)) {
+					errors.push(new Error(`value { ${value} } cannot be parsed to INTEGER`));
+				}
+			}
+		}
+		if (errors.length > 0) { throw errors; }
+		return data;
+	}
+	/**
      *
      * @param {String} model
      */
-    getModel(model) {
-        if (!(model in this.models)) { throw new Error(`model { ${model} } does not exist`); }
-        return this.models[model];
-    }
+	getModel(model) {
+		if (!(model in this.models)) { throw new Error(`model { ${model} } does not exist`); }
+		return this.models[model];
+	}
 }
 
 module.exports = { DatabaseHandler };

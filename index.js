@@ -14,7 +14,7 @@ const ch = new CommandHandler();
 const databaseHandler = new DatabaseHandler(DATABASE, PORT, USERNAME, PASSWORD);
 
 databaseHandler.init(() => {
-    ch.queueCommands(TEST_MODE? UNIT_TEST : ACTIVE_TEST);
+	ch.queueCommands(TEST_MODE ? UNIT_TEST : ACTIVE_TEST);
 	readline.on('line', (input) => {
 		ch.parseInput(input);
 	});
