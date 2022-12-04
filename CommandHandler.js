@@ -94,11 +94,11 @@ class CommandHandler {
 				args.push(obj);
 				objString = '';
 			}
-        }
+		}
 		return args;
 	}
 
-    async queueCommands(commands) {
+	async queueCommands(commands) {
 		for (const command of commands) {
 			console.log(command);
 			await this.parseInput(command);
