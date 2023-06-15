@@ -1,4 +1,4 @@
-module.exports = function(models) {
+module.exports = function (models) {
 	const Users = models.user;
 	const Pools = models.pool;
 

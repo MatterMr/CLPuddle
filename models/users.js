@@ -1,16 +1,20 @@
-module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('user', {
-		discordId: {
-			type: DataTypes.STRING,
-			unique: true,
-			allowNull: false,
+module.exports = function (sequelize, DataTypes) {
+	return sequelize.define(
+		'user',
+		{
+			discordId: {
+				type: DataTypes.STRING,
+				unique: true,
+				allowNull: false,
+			},
+			osuId: {
+				type: DataTypes.INTEGER,
+				unique: true,
+				allowNull: true,
+			},
 		},
-		osuId: {
-			type: DataTypes.INTEGER,
-			unique: true,
-			allowNull: true,
-		},
-	}, {
-		timestamps: false,
-	});
+		{
+			timestamps: false,
+		}
+	);
 };
